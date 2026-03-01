@@ -1,6 +1,6 @@
 # Agentic Newsroom Demo
 
-This repo contains a Python-based multi-agent newsroom workflow built on Mistral Agents. Follow `PLAN.md` for architecture, testing, and implementation details.
+This repo contains a Python-based multi-agent newsroom workflow built on Mistral Agents. 
 
 ## Quickstart
 1. Create and populate an `env` file with your credentials. For example:
