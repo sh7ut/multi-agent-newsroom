@@ -187,13 +187,33 @@ def _to_datetime(value: Any) -> datetime:
 def _extract_json_from_run(run_result) -> Dict[str, Any]:
     for entry in reversed(run_result.output_entries):
         if isinstance(entry, FunctionResultEntry):
-            try:
-                return json.loads(entry.result)
-            except json.JSONDecodeError:
-                continue
+            parsed = _safe_json_load(entry.result)
+            if parsed is not None:
+                return parsed
     text = run_result.output_as_text
-    cleaned = text.strip().strip("`")
-    return json.loads(cleaned)
+    parsed = _safe_json_load(text)
+    if parsed is not None:
+        return parsed
+    raise ValueError("Unable to parse archive response JSON")
+
+
+def _safe_json_load(payload: Any) -> Dict[str, Any] | None:
+    if not payload:
+        return None
+    try:
+        data = json.loads(payload if isinstance(payload, str) else str(payload))
+    except json.JSONDecodeError:
+        return None
+    if isinstance(data, dict):
+        return data
+    if isinstance(data, list) and data:
+        first = data[0]
+        if isinstance(first, dict) and "text" in first:
+            try:
+                return json.loads(first["text"])
+            except json.JSONDecodeError:
+                return None
+    return None
 
 
 async def _close_mistral_client(client: Mistral) -> None:

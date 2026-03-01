@@ -29,3 +29,14 @@ This repo contains a Python-based multi-agent newsroom workflow built on Mistral
    ```
 
 Implementation is in progress—see `PLAN.md` for the intended modules and behaviors.
+
+## Streamlit UI (optional)
+1. Install the UI extras:
+   ```bash
+   pip install ".[ui]"
+   ```
+2. Run the Streamlit app:
+   ```bash
+   streamlit run ui/streamlit_app.py
+   ```
+3. Enter a query in the browser to generate the Agentic Newsroom brief without using the CLI.

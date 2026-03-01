@@ -17,8 +17,21 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["pytest>=8.0.0"]
-ui = ["uvicorn[standard]>=0.27.0"]
+ui = [
+    "uvicorn[standard]>=0.27.0",
+    "streamlit>=1.32.0",
+]
 
 [build-system]
 requires = ["setuptools>=64", "wheel"]
 build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = [
+    "agents",
+    "tools",
+    "services",
+    "formatting",
+    "mcp_servers",
+    "ui",
+]

@@ -9,3 +9,7 @@ __pycache__/
 venv/
 .envrc
 .env.local
+env
+architecture.md
+REQUIREMENT.md
+PLAN.md

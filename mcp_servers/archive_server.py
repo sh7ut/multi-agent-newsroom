@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import re
 from datetime import date, datetime
 from typing import List, Optional
 
@@ -78,9 +79,16 @@ def _matches_section(article_section: str, requested_section: Optional[str]) -> 
     return article_section.lower() == requested_section.lower()
 
 
+STOPWORDS = {"the", "and", "of", "in", "on", "for", "to", "a", "an", "is", "are", "with"}
+
+
 def _score(query: str, headline: str, snippet: str) -> int:
-    q = query.lower()
-    return int(q in headline.lower()) * 2 + int(q in snippet.lower())
+    tokens = {token for token in re.findall(r"\w+", query.lower()) if token not in STOPWORDS}
+    if not tokens:
+        return 0
+    text = f"{headline} {snippet}".lower()
+    matches = sum(token in text for token in tokens)
+    return matches
 
 
 @server.tool(name="search_archive", description="Search the historical archive for relevant articles.")
@@ -98,9 +106,12 @@ def search_archive(
             continue
         if not _matches_section(entry["section"], section):
             continue
-        scored.append((_score(query, entry["headline"], entry["snippet"]), entry))
+        score = _score(query, entry["headline"], entry["snippet"])
+        if score == 0:
+            continue
+        scored.append((score, entry))
     scored.sort(key=lambda item: item[0], reverse=True)
-    matches = [item[1] for item in scored[: max(1, limit)]]
+    matches = [item[1] for item in scored[: max(1, limit)]] if scored else []
     return json.dumps({"articles": matches})
 
 
