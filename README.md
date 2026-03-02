@@ -28,8 +28,6 @@ This repo contains a Python-based multi-agent newsroom workflow built on Mistral
    print("\u2713 Mistral client initialized")
    ```
 
-Implementation is in progress—see `PLAN.md` for the intended modules and behaviors.
-
 ## Streamlit UI (optional)
 1. Install the UI extras:
    ```bash
